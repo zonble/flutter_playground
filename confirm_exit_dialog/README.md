@@ -1,6 +1,8 @@
 # confirm_exit_dialog
 
-A new Flutter project.
+The project demonstrates how to present a dialog to let the users to confirm if
+they really want to exit current app, when they tap on the back button on
+Android.
 
 ## Getting Started
 

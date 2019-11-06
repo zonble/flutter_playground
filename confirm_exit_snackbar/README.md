@@ -1,6 +1,7 @@
 # confirm_exit_snackbar
 
-A new Flutter project.
+The project demonstrates how to presents a snackbar while the current user tap
+on the back button and try to exit the app on Android.
 
 ## Getting Started
 

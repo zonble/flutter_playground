@@ -1,4 +1,4 @@
-# confirm_exit_sneakbar
+# confirm_exit_snackbar
 
 A new Flutter project.
 

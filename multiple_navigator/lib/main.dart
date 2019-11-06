@@ -21,27 +21,40 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _activeIndex = 0;
+  List<GlobalKey<NavigatorState>> _keys =
+      List.generate(2, (index) => GlobalKey<NavigatorState>());
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBuilder: (context, index) {
-        // CupertinoTabView contains a navigator.
-        return CupertinoTabView(
-            builder: (context) => SimplePage(
-                  level: 0,
-                ));
+    return WillPopScope(
+      onWillPop: () async {
+        final state = _keys[_activeIndex].currentState;
+        if (state.canPop()) {
+          state.pop();
+          return false;
+        }
+        return true;
       },
-      tabBar: CupertinoTabBar(
-        items: [
-          BottomNavigationBarItem(
-              title: Text("First"), icon: Icon(Icons.album)),
-          BottomNavigationBarItem(
-              title: Text("Second"), icon: Icon(Icons.music_note)),
-        ],
-        onTap: (index) {
-          _activeIndex = index;
+      child: CupertinoTabScaffold(
+        tabBuilder: (context, index) {
+          // CupertinoTabView contains a navigator.
+          return CupertinoTabView(
+              navigatorKey: _keys[index],
+              builder: (context) => SimplePage(
+                    level: 0,
+                  ));
         },
+        tabBar: CupertinoTabBar(
+          items: [
+            BottomNavigationBarItem(
+                title: Text("First"), icon: Icon(Icons.album)),
+            BottomNavigationBarItem(
+                title: Text("Second"), icon: Icon(Icons.music_note)),
+          ],
+          onTap: (index) {
+            _activeIndex = index;
+          },
+        ),
       ),
     );
   }
@@ -63,23 +76,26 @@ class _SimplePageState extends State<SimplePage> {
       navigationBar: CupertinoNavigationBar(
         middle: Text("List level ${widget.level}"),
       ),
-      child: ListView.builder(
-          itemBuilder: (context, index) {
-            return Material(
-              child: ListTile(
-                title: Text("Item"),
-                onTap: () {
-                  final route = CupertinoPageRoute(builder: (context) {
-                    return SimplePage(
-                      level: widget.level + 1,
-                    );
-                  });
-                  Navigator.of(context).push(route);
-                },
-              ),
-            );
-          },
-          itemCount: 10),
+      child: Scrollbar(
+        child: ListView.builder(
+            itemBuilder: (context, index) {
+              return Material(
+                child: ListTile(
+                  title: Text("Item"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    final route = CupertinoPageRoute(builder: (context) {
+                      return SimplePage(
+                        level: widget.level + 1,
+                      );
+                    });
+                    Navigator.of(context).push(route);
+                  },
+                ),
+              );
+            },
+            itemCount: 10),
+      ),
     );
   }
 }
